@@ -3,17 +3,118 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 90;
 	objects = {
+
+/* Begin PBXBuildFile section */
+		6D02B96D2F07C92E0017F217 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D02B96C2F07C92E0017F217 /* Assets.xcassets */; };
+		6D02B9802F07C9410017F217 /* UPDATE_README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6D02B97F2F07C9410017F217 /* UPDATE_README.md */; };
+		6D02B9812F07C9410017F217 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6D02B97E2F07C9410017F217 /* README.md */; };
+		6D02B9822F07C9410017F217 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 6D02B97D2F07C9410017F217 /* Makefile */; };
+		6D02B9842F07C9580017F217 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6D02B9832F07C9580017F217 /* .gitignore */; };
+/* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6D02B9462F07C7780017F217 /* snmpproxyclient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = snmpproxyclient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D02B96C2F07C92E0017F217 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6D02B97D2F07C9410017F217 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		6D02B97E2F07C9410017F217 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		6D02B97F2F07C9410017F217 /* UPDATE_README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = UPDATE_README.md; sourceTree = "<group>"; };
+		6D02B9832F07C9580017F217 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6D02B9AC2F07C9DD0017F217 /* Exceptions for "App" folder in "snmpproxyclient" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SNMPProxyClientApp.swift,
+			);
+			target = 6D02B9452F07C7780017F217 /* snmpproxyclient */;
+		};
+		6D02B9AD2F07C9DD0017F217 /* Exceptions for "Models" folder in "snmpproxyclient" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Proto/snmpproxy.pb.swift,
+			);
+			target = 6D02B9452F07C7780017F217 /* snmpproxyclient */;
+		};
+		6D02B9AE2F07C9DD0017F217 /* Exceptions for "Network" folder in "snmpproxyclient" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ConnectionState.swift,
+				ProxyClient.swift,
+				WireProtocol.swift,
+			);
+			target = 6D02B9452F07C7780017F217 /* snmpproxyclient */;
+		};
+		6D02B9AF2F07C9DD0017F217 /* Exceptions for "Services" folder in "snmpproxyclient" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TimeSeriesStore.swift,
+			);
+			target = 6D02B9452F07C7780017F217 /* snmpproxyclient */;
+		};
+		6D02B9B02F07C9DD0017F217 /* Exceptions for "Views" folder in "snmpproxyclient" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AddTargetSheet.swift,
+				ConfigView.swift,
+				ConnectSheet.swift,
+				ContentView.swift,
+				LiveGraphView.swift,
+				ServerStatusView.swift,
+				SessionInfoView.swift,
+				SettingsView.swift,
+				TargetDetailView.swift,
+			);
+			target = 6D02B9452F07C7780017F217 /* snmpproxyclient */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6D02B9482F07C7780017F217 /* snmpproxyclient */ = {
+		6D02B9862F07C9DC0017F217 /* App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = snmpproxyclient;
+			exceptions = (
+				6D02B9AC2F07C9DD0017F217 /* Exceptions for "App" folder in "snmpproxyclient" target */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		6D02B9892F07C9DC0017F217 /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6D02B9AD2F07C9DD0017F217 /* Exceptions for "Models" folder in "snmpproxyclient" target */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6D02B98D2F07C9DC0017F217 /* Network */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6D02B9AE2F07C9DD0017F217 /* Exceptions for "Network" folder in "snmpproxyclient" target */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		6D02B98F2F07C9DC0017F217 /* Proto */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Proto;
+			sourceTree = "<group>";
+		};
+		6D02B9912F07C9DC0017F217 /* Services */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6D02B9AF2F07C9DD0017F217 /* Exceptions for "Services" folder in "snmpproxyclient" target */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		6D02B99B2F07C9DC0017F217 /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6D02B9B02F07C9DD0017F217 /* Exceptions for "Views" folder in "snmpproxyclient" target */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -21,10 +122,8 @@
 /* Begin PBXFrameworksBuildPhase section */
 		6D02B9432F07C7780017F217 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -32,8 +131,18 @@
 		6D02B93D2F07C7780017F217 = {
 			isa = PBXGroup;
 			children = (
-				6D02B9482F07C7780017F217 /* snmpproxyclient */,
 				6D02B9472F07C7780017F217 /* Products */,
+				6D02B9862F07C9DC0017F217 /* App */,
+				6D02B9892F07C9DC0017F217 /* Models */,
+				6D02B98D2F07C9DC0017F217 /* Network */,
+				6D02B98F2F07C9DC0017F217 /* Proto */,
+				6D02B9912F07C9DC0017F217 /* Services */,
+				6D02B99B2F07C9DC0017F217 /* Views */,
+				6D02B9832F07C9580017F217 /* .gitignore */,
+				6D02B96C2F07C92E0017F217 /* Assets.xcassets */,
+				6D02B97D2F07C9410017F217 /* Makefile */,
+				6D02B97E2F07C9410017F217 /* README.md */,
+				6D02B97F2F07C9410017F217 /* UPDATE_README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,14 +167,10 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			fileSystemSynchronizedGroups = (
-				6D02B9482F07C7780017F217 /* snmpproxyclient */,
+				6D02B98F2F07C9DC0017F217 /* Proto */,
 			);
 			name = snmpproxyclient;
-			packageProductDependencies = (
-			);
 			productName = snmpproxyclient;
 			productReference = 6D02B9462F07C7780017F217 /* snmpproxyclient.app */;
 			productType = "com.apple.product-type.application";
@@ -94,7 +199,7 @@
 			);
 			mainGroup = 6D02B93D2F07C7780017F217;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 90;
 			productRefGroup = 6D02B9472F07C7780017F217 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -107,25 +212,26 @@
 /* Begin PBXResourcesBuildPhase section */
 		6D02B9442F07C7780017F217 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
+				6D02B9842F07C9580017F217 /* .gitignore in Resources */,
+				6D02B96D2F07C92E0017F217 /* Assets.xcassets in Resources */,
+				6D02B9802F07C9410017F217 /* UPDATE_README.md in Resources */,
+				6D02B9812F07C9410017F217 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6D02B9422F07C7780017F217 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
+				6D02B9822F07C9410017F217 /* Makefile in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		6D02B94F2F07C77A0017F217 /* Debug */ = {
+		6D02B94F2F07C77A0017F217 /* Debug configuration for PBXProject "snmpproxyclient" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -188,7 +294,7 @@
 			};
 			name = Debug;
 		};
-		6D02B9502F07C77A0017F217 /* Release */ = {
+		6D02B9502F07C77A0017F217 /* Release configuration for PBXProject "snmpproxyclient" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -243,7 +349,7 @@
 			};
 			name = Release;
 		};
-		6D02B9522F07C77A0017F217 /* Debug */ = {
+		6D02B9522F07C77A0017F217 /* Debug configuration for PBXNativeTarget "snmpproxyclient" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -252,7 +358,17 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -266,14 +382,14 @@
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		6D02B9532F07C77A0017F217 /* Release */ = {
+		6D02B9532F07C77A0017F217 /* Release configuration for PBXNativeTarget "snmpproxyclient" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -282,7 +398,17 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -296,7 +422,7 @@
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -309,19 +435,17 @@
 		6D02B9412F07C7780017F217 /* Build configuration list for PBXProject "snmpproxyclient" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6D02B94F2F07C77A0017F217 /* Debug */,
-				6D02B9502F07C77A0017F217 /* Release */,
+				6D02B94F2F07C77A0017F217 /* Debug configuration for PBXProject "snmpproxyclient" */,
+				6D02B9502F07C77A0017F217 /* Release configuration for PBXProject "snmpproxyclient" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		6D02B9512F07C77A0017F217 /* Build configuration list for PBXNativeTarget "snmpproxyclient" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6D02B9522F07C77A0017F217 /* Debug */,
-				6D02B9532F07C77A0017F217 /* Release */,
+				6D02B9522F07C77A0017F217 /* Debug configuration for PBXNativeTarget "snmpproxyclient" */,
+				6D02B9532F07C77A0017F217 /* Release configuration for PBXNativeTarget "snmpproxyclient" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
