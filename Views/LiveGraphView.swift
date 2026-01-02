@@ -1,112 +1,276 @@
 import SwiftUI
 import Charts
-import Combine
 
+// MARK: - Live Graph View
+
+/// Displays live graph for selected time series
 struct LiveGraphView: View {
     let series: [TimeSeries]
     let timeWindow: TimeInterval
     
-    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    @State private var now = Date()
+    @State private var selectedPoint: (series: TimeSeries, point: GraphPoint)?
     
     var body: some View {
-        Chart {
-            ForEach(series) { timeSeries in
-                ForEach(timeSeries.dataPoints(lastSeconds: timeWindow)) { point in
-                    if let rate = point.rate {
-                        LineMark(
-                            x: .value("Time", point.timestamp),
-                            y: .value("Rate", rate * 8) // Convert to bits
-                        )
-                        .foregroundStyle(by: .value("Target", timeSeries.displayName))
-                        .interpolationMethod(.monotone)
-                    }
+        VStack(alignment: .leading, spacing: 8) {
+            if series.isEmpty {
+                ContentUnavailableView(
+                    "No Data",
+                    systemImage: "chart.xyaxis.line",
+                    description: Text("Select targets to view their graphs")
+                )
+            } else {
+                // Chart
+                chartView
+                
+                // Legend
+                legendView
+                
+                // Statistics
+                if series.count == 1, let single = series.first {
+                    statisticsView(for: single)
                 }
             }
-            
-            // Show current time marker
-            RuleMark(x: .value("Now", now))
-                .foregroundStyle(.gray.opacity(0.3))
-                .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
         }
-        .chartXScale(domain: (now.addingTimeInterval(-timeWindow))...now)
+    }
+    
+    // MARK: - Chart View
+    
+    private var chartView: some View {
+        Chart {
+            ForEach(series) { s in
+                let points = s.graphPoints(in: timeWindow)
+                let config = s.metricConfig
+                
+                ForEach(points) { point in
+                    if config.graphConfig.fillArea {
+                        AreaMark(
+                            x: .value("Time", point.timestamp),
+                            y: .value("Value", point.value)
+                        )
+                        .foregroundStyle(by: .value("Series", s.displayName))
+                        .opacity(0.3)
+                    }
+                    
+                    LineMark(
+                        x: .value("Time", point.timestamp),
+                        y: .value("Value", point.value)
+                    )
+                    .foregroundStyle(by: .value("Series", s.displayName))
+                    .lineStyle(StrokeStyle(lineWidth: config.graphConfig.lineWidth))
+                }
+                
+                // Show baseline if configured
+                if config.graphConfig.showBaseline {
+                    RuleMark(y: .value("Baseline", 0))
+                        .foregroundStyle(.secondary.opacity(0.5))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [5, 5]))
+                }
+            }
+        }
         .chartXAxis {
-            AxisMarks(values: .automatic(desiredCount: 6)) { value in
+            AxisMarks(values: .automatic(desiredCount: 5)) { value in
                 AxisGridLine()
                 AxisValueLabel(format: .dateTime.hour().minute().second())
             }
         }
         .chartYAxis {
-            AxisMarks { value in
+            AxisMarks(position: .leading) { value in
                 AxisGridLine()
-                AxisValueLabel {
-                    if let rate = value.as(Double.self) {
-                        Text(formatRate(rate))
+                if let doubleValue = value.as(Double.self) {
+                    AxisValueLabel {
+                        Text(formatYAxisLabel(doubleValue))
                     }
                 }
             }
         }
-        .chartLegend(position: .top)
-        .onReceive(timer) { _ in
-            now = Date()
+        .chartYScale(domain: yAxisDomain)
+        .chartLegend(position: .bottom)
+        .frame(minHeight: 200)
+    }
+    
+    // MARK: - Y-Axis Formatting
+    
+    private var yAxisDomain: ClosedRange<Double> {
+        // Collect all points from all series
+        var allValues: [Double] = []
+        for s in series {
+            let points = s.graphPoints(in: timeWindow)
+            allValues.append(contentsOf: points.map { $0.value })
+        }
+        
+        guard !allValues.isEmpty else {
+            return 0...100
+        }
+        
+        // Get configured bounds from first series (or use auto)
+        let config = series.first?.metricConfig.graphConfig ?? GraphConfig()
+        
+        let dataMin = allValues.min() ?? 0
+        let dataMax = allValues.max() ?? 100
+        
+        let min = config.yAxisMin ?? (config.showBaseline ? Swift.min(0, dataMin) : dataMin * 0.9)
+        let max = config.yAxisMax ?? Swift.max(dataMax * 1.1, min + 1)
+        
+        return min...max
+    }
+    
+    private func formatYAxisLabel(_ value: Double) -> String {
+        // Use first series config for formatting
+        guard let config = series.first?.metricConfig else {
+            return String(format: "%.1f", value)
+        }
+        
+        let formatter = MetricFormatter(config: config)
+        return formatter.format(value)
+    }
+    
+    // MARK: - Legend View
+    
+    private var legendView: some View {
+        HStack(spacing: 16) {
+            ForEach(series) { s in
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(seriesColor(for: s))
+                        .frame(width: 8, height: 8)
+                    
+                    Text(s.displayName)
+                        .font(.caption)
+                    
+                    if let current = s.currentDisplayValue {
+                        Text(current)
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
         }
     }
     
-    private func formatRate(_ bps: Double) -> String {
-        if bps >= 1_000_000_000 {
-            return String(format: "%.1fG", bps / 1_000_000_000)
-        } else if bps >= 1_000_000 {
-            return String(format: "%.1fM", bps / 1_000_000)
-        } else if bps >= 1_000 {
-            return String(format: "%.1fK", bps / 1_000)
-        } else {
-            return String(format: "%.0f", bps)
+    private func seriesColor(for series: TimeSeries) -> Color {
+        // Return color based on threshold if configured
+        if let rate = series.currentRate {
+            return series.metricConfig.formatter.color(for: rate)
+        }
+        return .blue
+    }
+    
+    // MARK: - Statistics View
+    
+    private func statisticsView(for series: TimeSeries) -> some View {
+        let stats = series.statistics
+        let formatter = series.metricConfig.formatter
+        
+        return HStack(spacing: 24) {
+            StatBox(title: "Current", value: formatter.format(stats.current))
+            StatBox(title: "Average", value: formatter.format(stats.avg))
+            StatBox(title: "Min", value: formatter.format(stats.min))
+            StatBox(title: "Max", value: formatter.format(stats.max))
+        }
+        .padding(.top, 8)
+    }
+}
+
+// MARK: - Stat Box
+
+private struct StatBox: View {
+    let title: String
+    let value: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.caption.monospacedDigit())
         }
     }
 }
 
-// MARK: - Mini Sparkline for Sidebar
+// MARK: - Multi-Series Graph View
 
+/// Graph view optimized for multiple series with different units
+struct MultiSeriesGraphView: View {
+    let series: [TimeSeries]
+    let timeWindow: TimeInterval
+    
+    var body: some View {
+        if hasMultipleUnits {
+            // Split into separate charts by unit type
+            VStack(spacing: 16) {
+                ForEach(seriesByUnit, id: \.key) { unit, seriesGroup in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(unit)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        
+                        LiveGraphView(series: seriesGroup, timeWindow: timeWindow)
+                    }
+                }
+            }
+        } else {
+            LiveGraphView(series: series, timeWindow: timeWindow)
+        }
+    }
+    
+    private var hasMultipleUnits: Bool {
+        let units = Set(series.map { $0.metricConfig.unit.displayName })
+        return units.count > 1
+    }
+    
+    private var seriesByUnit: [(key: String, value: [TimeSeries])] {
+        let grouped = Dictionary(grouping: series) { $0.metricConfig.unit.displayName }
+        return grouped.sorted { $0.key < $1.key }
+    }
+}
+
+// MARK: - Sparkline View
+
+/// Small inline sparkline for target row
 struct SparklineView: View {
-    @ObservedObject var series: TimeSeries
+    let series: TimeSeries
     let width: CGFloat
     let height: CGFloat
     
     var body: some View {
-        let points = series.dataPoints(lastSeconds: 60)
+        let points = series.graphPoints(in: 60) // Last minute
         
-        Chart(points) { point in
-            if let rate = point.rate {
+        if points.count >= 2 {
+            Chart(points) { point in
                 LineMark(
                     x: .value("Time", point.timestamp),
-                    y: .value("Rate", rate)
+                    y: .value("Value", point.value)
                 )
-                .foregroundStyle(.blue.gradient)
+                .foregroundStyle(lineColor)
             }
+            .chartXAxis(.hidden)
+            .chartYAxis(.hidden)
+            .chartLegend(.hidden)
+            .frame(width: width, height: height)
+        } else {
+            Rectangle()
+                .fill(.quaternary)
+                .frame(width: width, height: height)
         }
-        .chartXAxis(.hidden)
-        .chartYAxis(.hidden)
-        .frame(width: width, height: height)
+    }
+    
+    private var lineColor: Color {
+        if let rate = series.currentRate {
+            return series.metricConfig.formatter.color(for: rate)
+        }
+        return .blue
     }
 }
 
 // MARK: - Preview
 
-#Preview("Live Graph") {
+#Preview {
     let store = TimeSeriesStore()
-    let series = store.getOrCreate(targetID: "test", displayName: "Test Target")
     
-    // Add some sample data
-    for i in 0..<60 {
-        var sample = Snmpproxy_V1_Sample()
-        sample.targetID = "test"
-        sample.timestampMs = Int64(Date().timeIntervalSince1970 * 1000) - Int64((60 - i) * 1000)
-        sample.counter = UInt64(i * 1_000_000 + Int.random(in: 0...100_000))
-        sample.valid = true
-        series.addSample(sample)
+    return VStack {
+        LiveGraphView(series: [], timeWindow: 300)
     }
-    
-    return LiveGraphView(series: [series], timeWindow: 300)
-        .frame(height: 300)
-        .padding()
+    .frame(width: 600, height: 400)
+    .padding()
 }

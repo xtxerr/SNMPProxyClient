@@ -156,37 +156,56 @@ struct SidebarView: View {
 
 struct TargetRow: View {
     @ObservedObject var series: TimeSeries
+    @State private var showConfigSheet = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(series.displayName)
-                .font(.headline)
+            HStack {
+                Text(series.displayName)
+                    .font(.headline)
+                
+                Spacer()
+                
+                MetricTypeBadge(config: series.metricConfig)
+            }
             
             HStack {
-                if let rate = series.currentRate {
-                    Text(formatRate(rate))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                if let displayValue = series.currentDisplayValue {
+                    Text(displayValue)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(valueColor)
                 } else {
                     Text("No data")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
+                
+                Spacer()
+                
+                // Mini sparkline
+                SparklineView(series: series, width: 50, height: 16)
             }
         }
         .padding(.vertical, 2)
+        .contextMenu {
+            Button("Configure Metric...") {
+                showConfigSheet = true
+            }
+        }
+        .sheet(isPresented: $showConfigSheet) {
+            NavigationStack {
+                MetricConfigView(config: Binding(
+                    get: { series.metricConfig },
+                    set: { series.metricConfig = $0; series.recalculateDisplayValues() }
+                ))
+            }
+            .frame(minWidth: 500, minHeight: 600)
+        }
     }
     
-    private func formatRate(_ rate: Double) -> String {
-        if rate >= 1_000_000_000 {
-            return String(format: "%.2f Gbps", rate * 8 / 1_000_000_000)
-        } else if rate >= 1_000_000 {
-            return String(format: "%.2f Mbps", rate * 8 / 1_000_000)
-        } else if rate >= 1_000 {
-            return String(format: "%.2f Kbps", rate * 8 / 1_000)
-        } else {
-            return String(format: "%.0f bps", rate * 8)
-        }
+    private var valueColor: Color {
+        guard let rate = series.currentRate else { return .secondary }
+        return series.metricConfig.formatter.color(for: rate)
     }
 }
 
